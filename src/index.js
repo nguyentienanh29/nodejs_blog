@@ -5,6 +5,10 @@ const { engine } = require("express-handlebars");
 const app = express();
 const port = 4000;
 
+//Set Config Route Static Files
+app.use(express.static(path.join(__dirname, "public")));
+
+//HTTP Logger
 app.use(morgan("combined"));
 
 //template egine
