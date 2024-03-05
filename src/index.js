@@ -2,6 +2,11 @@ const express = require("express");
 const morgan = require("morgan");
 const path = require("path");
 const { engine } = require("express-handlebars");
+const db = require("./config/db");
+
+//connect to db
+db.connect();
+
 const app = express();
 const port = 4000;
 
@@ -31,7 +36,9 @@ app.engine(
 );
 app.set("view engine", "hbs");
 //set lại thư mục
-app.set("views", path.join(__dirname, "resources/views"));
+app.set("views", path.join(__dirname, "resources", "views"));
+
+//Home, search, contact
 
 //route init
 route(app);
@@ -39,5 +46,5 @@ route(app);
 //127.0.0.1 -> localhost
 
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
+  console.log(`App listening on port ${port}`);
 });
