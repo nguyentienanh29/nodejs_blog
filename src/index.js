@@ -3,6 +3,7 @@ const morgan = require("morgan");
 const path = require("path");
 const { engine } = require("express-handlebars");
 const db = require("./config/db");
+const methodOverride = require("method-override");
 
 //connect to db
 db.connect();
@@ -11,6 +12,9 @@ const app = express();
 const port = 4000;
 
 const route = require("./routes"); // tự nạp file index.js
+
+//override HTTP method
+app.use(methodOverride("_method"));
 
 //Set Config Route Static Files
 app.use(express.static(path.join(__dirname, "public")));
@@ -32,13 +36,15 @@ app.engine(
   "hbs",
   engine({
     extname: ".hbs",
+    helpers: {
+      sum: (a, b) => a + b,
+    },
   })
 );
 app.set("view engine", "hbs");
+
 //set lại thư mục
 app.set("views", path.join(__dirname, "resources", "views"));
-
-//Home, search, contact
 
 //route init
 route(app);

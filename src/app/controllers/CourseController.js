@@ -1,5 +1,8 @@
 const Course = require("../models/Course"); // export ra model
-const { multipleMongooseToObject } = require("../../util/mongoose");
+const {
+  multipleMongooseToObject,
+  mongooseToObject,
+} = require("../../util/mongoose");
 
 class CourseController {
   //[GET] /courses/create
@@ -12,7 +15,7 @@ class CourseController {
     const formData = req.body;
     formData.image = `https://i.ytimg.com/vi/${req.body.img}/sddefault.jpg`;
     const newCourse = new Course(formData);
-    newCourse.save().then(() => res.redirect("/admin"));
+    newCourse.save().then(() => res.redirect("/"));
   }
 
   //[GET] /courses/:slug
@@ -25,6 +28,30 @@ class CourseController {
       .then((courses) => {
         res.render("courses/show");
       })
+      .catch((error) => next(error));
+  }
+
+  //[GET] /courses/:id/edit
+  edit(req, res, next) {
+    //
+    Course.findById(req.params.id)
+      .then((course) => {
+        res.render("courses/edit", { course: mongooseToObject(course) });
+      })
+      .catch((error) => next(error));
+  }
+
+  //[PUT] /courses/:id
+  update(req, res, next) {
+    Course.updateOne({ _id: req.params.id }, req.body)
+      .then(() => res.redirect("/me/stored/courses"))
+      .catch((error) => next(error));
+  }
+
+  //[DELETE] /courses/:id
+  delete(req, res, next) {
+    Course.delete({ _id: req.params.id })
+      .then(() => res.redirect("back"))
       .catch((error) => next(error));
   }
 }
